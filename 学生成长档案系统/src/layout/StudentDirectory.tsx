@@ -6,11 +6,12 @@ interface Props {
   students: Student[];
   selectedStudentId: number | null;
   onAdd: () => void;
+  onManageTags?: () => void;
   mobileOpen?: boolean;
   onClose?: () => void;
 }
 
-export function StudentDirectory({ students, selectedStudentId, onAdd, mobileOpen = false, onClose }: Props) {
+export function StudentDirectory({ students, selectedStudentId, onAdd, onManageTags, mobileOpen = false, onClose }: Props) {
   const [search, setSearch] = useState('');
   const [collapsed, setCollapsed] = useState<Set<string>>(() => new Set());
   const filtered = useMemo(
@@ -46,6 +47,7 @@ export function StudentDirectory({ students, selectedStudentId, onAdd, mobileOpe
         <input type="search" aria-label="搜索学生" placeholder="搜索学生姓名" value={search} onChange={(event) => setSearch(event.target.value)} />
       </label>
       <button className="button button-primary button-wide" type="button" onClick={onAdd}>＋ 新增学生</button>
+      {onManageTags && <button className="directory-action" type="button" onClick={onManageTags}>管理学生标签</button>}
       <nav className="grade-groups" aria-label="按年级浏览学生">
         {groups.map(([grade, gradeStudents]) => {
           const isCollapsed = collapsed.has(grade) && !search;

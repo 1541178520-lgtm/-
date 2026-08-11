@@ -1,7 +1,13 @@
 import { NavLink } from 'react-router';
 import type { Student } from '../../shared/contracts';
 
-export function StudentHeader({ student }: { student: Student }) {
+interface Props {
+  student: Student;
+  onEdit: () => void;
+  onDelete: () => void;
+}
+
+export function StudentHeader({ student, onEdit, onDelete }: Props) {
   return (
     <header className="student-header">
       <div className="student-title-row">
@@ -15,7 +21,11 @@ export function StudentHeader({ student }: { student: Student }) {
           </div>
           {student.tags.length > 0 && <div className="tag-row">{student.tags.map((tag) => <span className="tag" key={tag.id}>{tag.name}</span>)}</div>}
         </div>
-        <NavLink className="button button-secondary no-print" to={`/students/${student.id}/print`}>打印档案</NavLink>
+        <div className="student-actions no-print">
+          <button className="button button-secondary" type="button" onClick={onEdit}>编辑资料</button>
+          <button className="button button-quiet-danger" type="button" onClick={onDelete}>删除学生</button>
+          <NavLink className="button button-primary" to={`/students/${student.id}/print`}>打印档案</NavLink>
+        </div>
       </div>
       <nav className="archive-tabs" aria-label="档案章节">
         <NavLink to={`/students/${student.id}/scores`}>成绩记录</NavLink>

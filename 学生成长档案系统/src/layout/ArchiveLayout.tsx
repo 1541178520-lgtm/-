@@ -1,10 +1,13 @@
 import { useCallback, useEffect, useMemo, useState, type ReactNode } from 'react';
-import { Outlet, useLocation } from 'react-router';
+import { Outlet, useLocation, useNavigate } from 'react-router';
 import type { Student, Tag } from '../../shared/contracts';
 import { api, ApiClientError } from '../api/client';
 import { useAuth } from '../auth/context';
 import { ArchiveContext } from './ArchiveContext';
 import { StudentDirectory } from './StudentDirectory';
+import { Modal } from '../components/Modal';
+import { StudentForm } from '../features/students/StudentForm';
+import { TagManager } from '../features/tags/TagManager';
 
 async function loadDirectory(): Promise<{ students: Student[]; tags: Tag[] }> {
   const [studentResult, tagResult] = await Promise.all([
@@ -21,7 +24,9 @@ export function ArchiveLayout() {
   const [error, setError] = useState('');
   const [mobileOpen, setMobileOpen] = useState(false);
   const [createRequested, setCreateRequested] = useState(false);
+  const [manageTags, setManageTags] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
   const match = location.pathname.match(/^\/students\/(\d+)/u);
   const selectedStudentId = match ? Number(match[1]) : null;
 
@@ -56,7 +61,7 @@ export function ArchiveLayout() {
   return (
     <ArchiveContext.Provider value={context}>
       <div className="archive-app">
-        <StudentDirectory students={students} selectedStudentId={selectedStudentId} onAdd={() => setCreateRequested(true)} mobileOpen={mobileOpen} onClose={() => setMobileOpen(false)} />
+        <StudentDirectory students={students} selectedStudentId={selectedStudentId} onAdd={() => setCreateRequested(true)} onManageTags={() => setManageTags(true)} mobileOpen={mobileOpen} onClose={() => setMobileOpen(false)} />
         {mobileOpen && <button className="directory-backdrop mobile-only" type="button" aria-label="关闭学生目录" onClick={() => setMobileOpen(false)} />}
         <main className="archive-main">
           <div className="topbar no-print">
@@ -66,11 +71,24 @@ export function ArchiveLayout() {
             <button className="text-button" type="button" onClick={() => void logout()}>退出登录</button>
           </div>
           {error && <div className="banner-error" role="alert">{error}<button type="button" onClick={() => void refresh()}>重试</button></div>}
-          {createRequested && (
-            <div className="banner-info" role="status">学生新建表单将在下一模块启用。<button type="button" onClick={() => setCreateRequested(false)}>关闭</button></div>
-          )}
           <Outlet />
         </main>
+        {createRequested && (
+          <Modal title="新增学生" onClose={() => setCreateRequested(false)} wide>
+            <StudentForm tags={tags} onCancel={() => setCreateRequested(false)} onSaved={(student) => {
+              setCreateRequested(false);
+              void refresh().then(() => navigate(`/students/${student.id}/scores`));
+            }} />
+          </Modal>
+        )}
+        {manageTags && (
+          <Modal title="学生标签管理" onClose={() => setManageTags(false)} wide>
+            <TagManager tags={tags} onClose={() => setManageTags(false)} onChanged={(next) => {
+              setTags(next);
+              void refresh();
+            }} />
+          </Modal>
+        )}
       </div>
     </ArchiveContext.Provider>
   );
