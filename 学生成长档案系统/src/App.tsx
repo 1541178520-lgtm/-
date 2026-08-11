@@ -3,6 +3,7 @@ import { LoginPage } from './auth/LoginPage';
 import { ProtectedRoute } from './auth/ProtectedRoute';
 import { ArchiveLayout, ArchivePaper } from './layout/ArchiveLayout';
 import { StudentWorkspace } from './layout/StudentWorkspace';
+import { ScorePage } from './features/scores/ScorePage';
 
 function Welcome() {
   return (
@@ -30,7 +31,7 @@ export function App() {
           <Route index element={<Welcome />} />
           <Route path="students/:studentId" element={<StudentWorkspace />}>
             <Route index element={<Navigate to="scores" replace />} />
-            <Route path="scores" element={<ChapterPlaceholder title="成绩成长记录" />} />
+            <Route path="scores" element={<ScorePage />} />
             <Route path="study" element={<ChapterPlaceholder title="晚辅成长记录" />} />
             <Route path="courses" element={<ChapterPlaceholder title="课程档案" />} />
           </Route>
