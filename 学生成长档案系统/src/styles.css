@@ -158,6 +158,23 @@ a { color: inherit; text-decoration: none; }
 .empty-chapter h4 { margin: 1rem 0 .35rem; color: var(--ink); font-family: "STSong", serif; font-size: 1.2rem; }
 .empty-chapter p { margin: 0; font-size: .84rem; }
 .subject-inputs { display: grid; grid-template-columns: repeat(5, 1fr); gap: .75rem; margin: 1rem 0; }
+.large-text-field { margin-top: 1rem; }
+.notebook-section { background: #fdfbf6; }
+.notebook-page { position: relative; min-height: 410px; padding: 2rem 2.4rem 1.5rem; border: 1px solid #d7cebe; background-color: #fffefa; background-image: repeating-linear-gradient(to bottom, transparent 0, transparent 31px, rgba(126,108,84,.1) 32px); box-shadow: 0 8px 22px rgba(61,50,37,.07); }
+.notebook-page::before { content: ""; position: absolute; top: 0; bottom: 0; left: 1rem; border-left: 1px solid rgba(163,87,69,.18); }
+.notebook-page > header { display: flex; justify-content: space-between; gap: 1rem; padding-bottom: 1rem; border-bottom: 1px solid #d8d0c3; background: var(--paper); }
+.notebook-page > header p { margin: 0 0 .3rem; color: var(--accent); font-size: .74rem; letter-spacing: .08em; }
+.notebook-page > header time { font-family: "STSong", serif; font-size: 1.35rem; }
+.notebook-copy { min-height: 240px; padding: 1.5rem .4rem; white-space: pre-wrap; color: #39352f; font-family: "STSong", "SimSun", serif; font-size: 1.05rem; line-height: 2; }
+.notebook-page > footer { padding-top: .8rem; border-top: 1px dashed #d8d0c3; background: var(--paper); color: #8a8277; font-size: .7rem; }
+.notebook-pager { display: grid; grid-template-columns: 110px 1fr 110px; align-items: center; gap: 1rem; margin-top: 1rem; }
+.notebook-pager > span { color: var(--muted); font-family: "STSong", serif; text-align: center; }
+.subject-tabs { display: flex; flex-wrap: wrap; gap: .45rem; margin: -1rem 0 1.5rem; padding-bottom: 1rem; border-bottom: 1px solid var(--line); }
+.subject-tabs a { padding: .45rem .75rem; border: 1px solid var(--line); border-radius: 4px; background: #fff; color: var(--muted); font-size: .82rem; }
+.subject-tabs a.active { border-color: var(--accent); background: #f5eee9; color: var(--accent-dark); font-weight: 700; }
+.lesson-topic { display: flex; align-items: baseline; gap: .8rem; margin: 1.25rem .4rem 0; padding: .65rem .8rem; border-left: 3px solid #bea18f; background: #f8f4eb; }
+.lesson-topic span { color: var(--muted); font-size: .74rem; }
+.lesson-topic strong { font-family: "STSong", serif; font-size: 1.05rem; }
 
 @media (max-width: 800px) {
   .mobile-only { display: inline-flex; }
@@ -176,6 +193,8 @@ a { color: inherit; text-decoration: none; }
   .chapter-content { padding: 1.5rem 1.25rem 3rem; }
   .score-subjects { grid-template-columns: repeat(3, 1fr); }
   .subject-inputs { grid-template-columns: repeat(2, 1fr); }
+  .notebook-page { padding: 1.4rem 1.25rem 1.1rem; }
+  .notebook-pager { grid-template-columns: 92px 1fr 92px; gap: .5rem; }
 }
 
 @media (max-width: 480px) {
@@ -193,6 +212,8 @@ a { color: inherit; text-decoration: none; }
   .timeline-marker span { width: 27px; height: 27px; font-size: .75rem; }
   .score-timeline > li:not(:last-child)::before { left: 13px; }
   .score-subjects { grid-template-columns: repeat(2, 1fr); }
+  .notebook-pager { grid-template-columns: 1fr 1fr; }
+  .notebook-pager > span { grid-column: 1 / -1; grid-row: 1; }
   .student-meta span + span::before { display: none; }
   .student-meta { flex-direction: column; gap: .25rem; }
 }
