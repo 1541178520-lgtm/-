@@ -180,7 +180,6 @@ a { color: inherit; text-decoration: none; }
 .print-toolbar > div { display: flex; align-items: center; gap: 1rem; }
 .print-toolbar p { margin: 0; color: var(--muted); font-size: .78rem; }
 .print-document { position: relative; width: 210mm; max-width: 100%; margin: 0 auto; background: white; color: #222; box-shadow: 0 10px 30px rgba(39,34,28,.15); }
-.print-running-header, .print-page-footer { display: none; }
 .print-cover { min-height: 297mm; padding: 18mm; display: grid; }
 .cover-border { display: flex; flex-direction: column; align-items: center; padding: 25mm 18mm 16mm; border: 1.5px solid #715040; outline: 1px solid #cbb7a9; outline-offset: -7px; text-align: center; }
 .cover-border > p { margin: 0; color: #7a6659; font-family: Georgia, serif; font-size: 10pt; letter-spacing: .24em; text-transform: uppercase; }
@@ -210,20 +209,17 @@ a { color: inherit; text-decoration: none; }
 .print-empty { color: #777; text-align: center; }
 .print-state { min-height: 100vh; display: grid; place-content: center; gap: 1rem; background: #f6f2ea; text-align: center; }
 
-@page { size: A4; margin: 16mm 15mm 18mm; }
+@page { size: A4; margin: 24mm 15mm 18mm; }
 @media print {
   html, body, #root { width: 100%; min-width: 0; margin: 0; padding: 0; background: white !important; }
   .no-print, .student-directory, .topbar, .archive-tabs, .record-actions, .modal-backdrop { display: none !important; }
   .print-shell { padding: 0; background: white; }
   .print-document { width: auto; max-width: none; margin: 0; box-shadow: none; }
-  .print-cover { min-height: calc(297mm - 34mm); padding: 0; page-break-after: always; }
+  .print-cover { min-height: calc(297mm - 42mm); padding: 0; page-break-after: always; }
   .cover-border { padding: 22mm 16mm 12mm; }
   .chapter-break { break-before: page; page-break-before: always; }
   .print-chapter { padding: 0; }
   .print-record { orphans: 3; widows: 3; }
-  .print-running-header { display: block; position: fixed; top: -10mm; left: 0; right: 0; color: #777; font-size: 7.5pt; text-align: right; }
-  .print-page-footer { display: flex; position: fixed; bottom: -12mm; left: 0; right: 0; justify-content: space-between; color: #777; font-size: 7.5pt; }
-  .page-counter::after { content: "第 " counter(page) " 页"; }
 }
 
 @media (max-width: 800px) {

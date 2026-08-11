@@ -28,7 +28,6 @@ export function PrintArchivePage() {
         <div><p>请在打印窗口中选择打印机，或选择“另存为 PDF”。</p><button className="button button-primary" type="button" onClick={() => window.print()}>打印或另存为 PDF</button></div>
       </nav>
       <main className="print-document">
-        <div className="print-running-header">学生成长档案 · {student.name}</div>
         <section className="print-cover">
           <div className="cover-border">
             <p>Student Growth Archive</p>
@@ -78,7 +77,6 @@ export function PrintArchivePage() {
             ))}
           </section>
         ))}
-        <footer className="print-page-footer"><span>{student.name} · 学生成长档案</span><span className="page-counter" /></footer>
       </main>
     </div>
   );

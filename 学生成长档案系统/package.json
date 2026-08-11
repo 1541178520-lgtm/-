@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "tsc -b && vite build && node scripts/scrub-build-secrets.mjs",
     "preview": "vite preview",
     "deploy": "npm run build && wrangler deploy",
     "admin:create": "node scripts/create-admin.ts",
@@ -13,7 +13,9 @@
     "lint": "eslint . --max-warnings=0",
     "test": "npm run test:worker && npm run test:ui",
     "test:worker": "vitest run --config vitest.worker.config.ts",
-    "test:ui": "vitest run --config vitest.ui.config.ts"
+    "test:ui": "vitest run --config vitest.ui.config.ts",
+    "test:e2e": "playwright test",
+    "e2e:serve": "node scripts/reset-e2e.mjs && vite --host 127.0.0.1"
   },
   "dependencies": {
     "hono": "^4.13.1",
@@ -27,6 +29,7 @@
     "@cloudflare/vitest-pool-workers": "^0.21.0",
     "@cloudflare/workers-types": "^5.20260804.1",
     "@eslint/js": "^9.0.0",
+    "@playwright/test": "latest",
     "@tailwindcss/vite": "^4.3.3",
     "@testing-library/jest-dom": "^6.0.0",
     "@testing-library/react": "^16.0.0",
