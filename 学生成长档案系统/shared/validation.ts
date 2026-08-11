@@ -19,6 +19,9 @@ export const studentInputSchema = z.object({
 });
 
 export const tagInputSchema = z.object({ name: trimmed('标签名称', 30) });
+export const studentTagsInputSchema = z.object({
+  tag_ids: z.array(z.number().int().positive()).max(50, '每名学生最多添加50个标签'),
+});
 
 const optionalScore = z.number().min(0, '成绩不能小于0').max(150, '成绩不能大于150').nullable();
 export const scoreInputSchema = z.object({

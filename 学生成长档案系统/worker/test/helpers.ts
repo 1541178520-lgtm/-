@@ -15,6 +15,20 @@ export async function resetAuth(): Promise<void> {
   ]);
 }
 
+export async function resetDatabase(): Promise<void> {
+  await env.DB.batch([
+    env.DB.prepare('DELETE FROM course_records'),
+    env.DB.prepare('DELETE FROM study_records'),
+    env.DB.prepare('DELETE FROM scores'),
+    env.DB.prepare('DELETE FROM student_tags'),
+    env.DB.prepare('DELETE FROM tags'),
+    env.DB.prepare('DELETE FROM students'),
+    env.DB.prepare('DELETE FROM sessions'),
+    env.DB.prepare('DELETE FROM admins'),
+    env.DB.prepare("DELETE FROM sqlite_sequence WHERE name IN ('course_records', 'study_records', 'scores', 'tags', 'students', 'admins')"),
+  ]);
+}
+
 export async function setupAdmin(username = 'admin', password = 'Secret123!'): Promise<Response> {
   return api('/api/setup/admin', {
     method: 'POST',
@@ -42,4 +56,12 @@ export function authedHeaders(cookie: string, extra: HeadersInit = {}): Headers 
   headers.set('cookie', cookie);
   headers.set('origin', APP_URL);
   return headers;
+}
+
+export async function jsonRequest(path: string, cookie: string, method: string, body?: unknown): Promise<Response> {
+  return api(path, {
+    method,
+    headers: authedHeaders(cookie, { 'content-type': 'application/json' }),
+    ...(body === undefined ? {} : { body: JSON.stringify(body) }),
+  });
 }

@@ -3,6 +3,8 @@ import { secureHeaders } from 'hono/secure-headers';
 import { requireSession } from './lib/auth';
 import { ApiException, apiError } from './lib/http';
 import authRoutes from './routes/auth';
+import studentRoutes from './routes/students';
+import tagRoutes from './routes/tags';
 import type { AppEnv, Env } from './types';
 
 export type { Env } from './types';
@@ -27,7 +29,8 @@ app.route('/api', authRoutes);
 
 const protectedApi = new Hono<AppEnv>();
 protectedApi.use('*', requireSession);
-protectedApi.get('/students', (c) => c.json({ students: [] }));
+protectedApi.route('/', studentRoutes);
+protectedApi.route('/', tagRoutes);
 app.route('/api', protectedApi);
 
 app.notFound((c) => apiError(c, 404, 'NOT_FOUND', '接口不存在'));
