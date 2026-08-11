@@ -5,6 +5,7 @@ import { ApiException, apiError } from './lib/http';
 import authRoutes from './routes/auth';
 import studentRoutes from './routes/students';
 import tagRoutes from './routes/tags';
+import scoreRoutes from './routes/scores';
 import type { AppEnv, Env } from './types';
 
 export type { Env } from './types';
@@ -31,6 +32,7 @@ const protectedApi = new Hono<AppEnv>();
 protectedApi.use('*', requireSession);
 protectedApi.route('/', studentRoutes);
 protectedApi.route('/', tagRoutes);
+protectedApi.route('/', scoreRoutes);
 app.route('/api', protectedApi);
 
 app.notFound((c) => apiError(c, 404, 'NOT_FOUND', '接口不存在'));
