@@ -6,6 +6,7 @@ import { StudentWorkspace } from './layout/StudentWorkspace';
 import { ScorePage } from './features/scores/ScorePage';
 import { StudyNotebook } from './features/study/StudyNotebook';
 import { CourseNotebook } from './features/courses/CourseNotebook';
+import { PrintArchivePage } from './features/print/PrintArchivePage';
 
 function Welcome() {
   return (
@@ -20,15 +21,12 @@ function Welcome() {
   );
 }
 
-function ChapterPlaceholder({ title }: { title: string }) {
-  return <section className="chapter-placeholder"><p>正在整理</p><h3>{title}</h3></section>;
-}
-
 export function App() {
   return (
     <Routes>
       <Route path="/login" element={<LoginPage />} />
       <Route element={<ProtectedRoute />}>
+        <Route path="students/:studentId/print" element={<PrintArchivePage />} />
         <Route element={<ArchiveLayout />}>
           <Route index element={<Welcome />} />
           <Route path="students/:studentId" element={<StudentWorkspace />}>
@@ -37,7 +35,6 @@ export function App() {
             <Route path="study" element={<StudyNotebook />} />
             <Route path="courses/:subject?" element={<CourseNotebook />} />
           </Route>
-          <Route path="students/:studentId/print" element={<ChapterPlaceholder title="打印档案" />} />
         </Route>
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />

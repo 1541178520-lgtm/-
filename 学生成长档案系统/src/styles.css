@@ -175,6 +175,56 @@ a { color: inherit; text-decoration: none; }
 .lesson-topic { display: flex; align-items: baseline; gap: .8rem; margin: 1.25rem .4rem 0; padding: .65rem .8rem; border-left: 3px solid #bea18f; background: #f8f4eb; }
 .lesson-topic span { color: var(--muted); font-size: .74rem; }
 .lesson-topic strong { font-family: "STSong", serif; font-size: 1.05rem; }
+.print-shell { min-height: 100vh; padding: 1.5rem; background: #dedad1; }
+.print-toolbar { width: min(210mm, 100%); display: flex; justify-content: space-between; align-items: center; gap: 1rem; margin: 0 auto 1rem; padding: .8rem; border: 1px solid #cbc3b6; background: #fff; }
+.print-toolbar > div { display: flex; align-items: center; gap: 1rem; }
+.print-toolbar p { margin: 0; color: var(--muted); font-size: .78rem; }
+.print-document { position: relative; width: 210mm; max-width: 100%; margin: 0 auto; background: white; color: #222; box-shadow: 0 10px 30px rgba(39,34,28,.15); }
+.print-running-header, .print-page-footer { display: none; }
+.print-cover { min-height: 297mm; padding: 18mm; display: grid; }
+.cover-border { display: flex; flex-direction: column; align-items: center; padding: 25mm 18mm 16mm; border: 1.5px solid #715040; outline: 1px solid #cbb7a9; outline-offset: -7px; text-align: center; }
+.cover-border > p { margin: 0; color: #7a6659; font-family: Georgia, serif; font-size: 10pt; letter-spacing: .24em; text-transform: uppercase; }
+.cover-border h1 { margin: 22mm 0 8mm; font-family: "STSong", "SimSun", serif; font-size: 32pt; font-weight: 500; letter-spacing: .28em; }
+.cover-rule { width: 20mm; border-top: 1px solid #8c5c49; }
+.cover-border dl { width: 100%; margin: 30mm 0 0; }
+.cover-border dl > div { display: grid; grid-template-columns: 1fr 1.6fr; padding: 4mm 0; border-bottom: 1px solid #ddd3c8; text-align: left; }
+.cover-border dt { color: #776c63; font-size: 10pt; letter-spacing: .12em; }
+.cover-border dd { margin: 0; font-family: "STSong", serif; font-size: 13pt; }
+.print-tags { display: flex; flex-wrap: wrap; justify-content: center; gap: 4mm; margin-top: 12mm; }
+.print-tags span { padding: 1.5mm 3mm; border: 1px solid #b9afa4; font-size: 8pt; }
+.cover-border > footer { margin-top: auto; color: #796d64; font-family: "STSong", serif; font-size: 9pt; letter-spacing: .22em; }
+.print-chapter { padding: 18mm 18mm 20mm; }
+.print-chapter-title { margin-bottom: 12mm; padding-bottom: 5mm; border-bottom: 1px solid #786356; }
+.print-chapter-title span { color: #82513f; font-size: 8.5pt; letter-spacing: .2em; }
+.print-chapter-title h2 { margin: 2mm 0 0; font-family: "STSong", "SimSun", serif; font-size: 22pt; font-weight: 500; letter-spacing: .08em; }
+.print-record { margin-bottom: 7mm; padding: 5mm; border: 1px solid #d9d2ca; break-inside: avoid; page-break-inside: avoid; }
+.print-record > header { display: flex; justify-content: space-between; gap: 5mm; }
+.print-record time { color: #695f57; font-size: 9pt; }
+.print-record h3 { margin: 1.5mm 0 0; font-family: "STSong", serif; font-size: 13pt; }
+.print-score dl { display: flex; flex-wrap: wrap; gap: 4mm; margin: 4mm 0 0; }
+.print-score dl > div { min-width: 24mm; padding-left: 3mm; border-left: 1.5px solid #9f7f6d; }
+.print-score dt { color: #70665d; font-size: 8pt; }
+.print-score dd { margin: 1mm 0 0; font-family: Georgia, serif; font-size: 13pt; }
+.print-record > p { margin: 4mm 0 0; white-space: pre-wrap; font-family: "STSong", "SimSun", serif; font-size: 10.5pt; line-height: 1.8; }
+.print-note > header > span { color: #82513f; font-size: 8pt; }
+.print-empty { color: #777; text-align: center; }
+.print-state { min-height: 100vh; display: grid; place-content: center; gap: 1rem; background: #f6f2ea; text-align: center; }
+
+@page { size: A4; margin: 16mm 15mm 18mm; }
+@media print {
+  html, body, #root { width: 100%; min-width: 0; margin: 0; padding: 0; background: white !important; }
+  .no-print, .student-directory, .topbar, .archive-tabs, .record-actions, .modal-backdrop { display: none !important; }
+  .print-shell { padding: 0; background: white; }
+  .print-document { width: auto; max-width: none; margin: 0; box-shadow: none; }
+  .print-cover { min-height: calc(297mm - 34mm); padding: 0; page-break-after: always; }
+  .cover-border { padding: 22mm 16mm 12mm; }
+  .chapter-break { break-before: page; page-break-before: always; }
+  .print-chapter { padding: 0; }
+  .print-record { orphans: 3; widows: 3; }
+  .print-running-header { display: block; position: fixed; top: -10mm; left: 0; right: 0; color: #777; font-size: 7.5pt; text-align: right; }
+  .print-page-footer { display: flex; position: fixed; bottom: -12mm; left: 0; right: 0; justify-content: space-between; color: #777; font-size: 7.5pt; }
+  .page-counter::after { content: "第 " counter(page) " 页"; }
+}
 
 @media (max-width: 800px) {
   .mobile-only { display: inline-flex; }
