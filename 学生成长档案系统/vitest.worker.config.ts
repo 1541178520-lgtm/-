@@ -12,6 +12,9 @@ export default defineConfig({
       miniflare: {
         bindings: {
           TEST_MIGRATIONS: await readD1Migrations(path.join(root, 'migrations')),
+          APP_ORIGIN: 'https://app.test',
+          SESSION_COOKIE_SECURE: 'true',
+          SETUP_SECRET: 'test-setup-secret',
         },
       },
     })),

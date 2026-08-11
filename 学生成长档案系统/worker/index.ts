@@ -1,12 +1,42 @@
-export interface Env {
-  DB: D1Database;
-  APP_ORIGIN: string;
-  SESSION_COOKIE_SECURE: string;
-  SETUP_SECRET?: string;
-}
+import { Hono } from 'hono';
+import { secureHeaders } from 'hono/secure-headers';
+import { requireSession } from './lib/auth';
+import { ApiException, apiError } from './lib/http';
+import authRoutes from './routes/auth';
+import type { AppEnv, Env } from './types';
 
-export default {
-  async fetch(): Promise<Response> {
-    return Response.json({ error: { code: 'NOT_FOUND', message: '接口不存在' } }, { status: 404 });
-  },
-} satisfies ExportedHandler<Env>;
+export type { Env } from './types';
+
+const app = new Hono<AppEnv>();
+
+app.use('*', secureHeaders({
+  crossOriginResourcePolicy: 'same-origin',
+  referrerPolicy: 'same-origin',
+  xFrameOptions: 'DENY',
+}));
+app.use('/api/*', async (c, next) => {
+  c.header('Cache-Control', 'no-store');
+  const unsafe = !['GET', 'HEAD', 'OPTIONS'].includes(c.req.method);
+  if (unsafe && c.req.header('origin') !== c.env.APP_ORIGIN) {
+    throw new ApiException(403, 'INVALID_ORIGIN', '请求来源无效');
+  }
+  await next();
+});
+
+app.route('/api', authRoutes);
+
+const protectedApi = new Hono<AppEnv>();
+protectedApi.use('*', requireSession);
+protectedApi.get('/students', (c) => c.json({ students: [] }));
+app.route('/api', protectedApi);
+
+app.notFound((c) => apiError(c, 404, 'NOT_FOUND', '接口不存在'));
+app.onError((error, c) => {
+  if (error instanceof ApiException) {
+    return apiError(c, error.status, error.code, error.message, error.fields);
+  }
+  console.error(error);
+  return apiError(c, 500, 'INTERNAL_ERROR', '服务器暂时无法处理请求');
+});
+
+export default app satisfies ExportedHandler<Env>;
