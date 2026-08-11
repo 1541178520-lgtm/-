@@ -6,6 +6,8 @@ import authRoutes from './routes/auth';
 import studentRoutes from './routes/students';
 import tagRoutes from './routes/tags';
 import scoreRoutes from './routes/scores';
+import studyRecordRoutes from './routes/study-records';
+import courseRecordRoutes from './routes/course-records';
 import type { AppEnv, Env } from './types';
 
 export type { Env } from './types';
@@ -33,6 +35,8 @@ protectedApi.use('*', requireSession);
 protectedApi.route('/', studentRoutes);
 protectedApi.route('/', tagRoutes);
 protectedApi.route('/', scoreRoutes);
+protectedApi.route('/', studyRecordRoutes);
+protectedApi.route('/', courseRecordRoutes);
 app.route('/api', protectedApi);
 
 app.notFound((c) => apiError(c, 404, 'NOT_FOUND', '接口不存在'));
