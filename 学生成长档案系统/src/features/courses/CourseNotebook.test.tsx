@@ -50,11 +50,12 @@ describe('CourseNotebook', () => {
     await user.click(screen.getByRole('button', { name: '保存课程记录' }));
     expect(await screen.findByText('新反馈')).toBeInTheDocument();
 
-    await user.click(screen.getByRole('button', { name: '编辑本页' }));
     await user.clear(screen.getByLabelText('教师反馈'));
     await user.type(screen.getByLabelText('教师反馈'), '已修改反馈');
-    await user.click(screen.getByRole('button', { name: '保存修改' }));
-    expect(await screen.findByText('已修改反馈')).toBeInTheDocument();
+    await user.tab();
+    expect(await screen.findByText('已保存')).toBeInTheDocument();
+    expect(screen.getByLabelText('教师反馈')).toHaveValue('已修改反馈');
+    expect(screen.queryByRole('button', { name: '编辑本页' })).not.toBeInTheDocument();
 
     await user.click(screen.getByRole('button', { name: '删除本页' }));
     await user.click(screen.getByRole('button', { name: '确认删除课程记录' }));
