@@ -16,7 +16,7 @@ describe('administrator authentication', () => {
     expect(admin?.password_hash).not.toContain('Secret123!');
     expect(admin?.password_hash).toMatch(/^[A-Za-z0-9_-]{40,}$/);
     expect(admin?.password_salt).toMatch(/^[A-Za-z0-9_-]{20,}$/);
-    expect(admin?.password_iterations).toBeGreaterThanOrEqual(100_000);
+    expect(admin?.password_iterations).toBe(100_000);
 
     const duplicate = await setupAdmin('other-admin', 'Another123!');
     expect(duplicate.status).toBe(409);

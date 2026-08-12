@@ -14,11 +14,11 @@
 npx wrangler d1 create student-growth-archive
 ```
 
-把命令返回的 `database_id` 写入 `wrangler.jsonc` 的 `d1_databases[0].database_id`。
+把命令返回的 `database_id` 写入 `wrangler.production.jsonc` 的 `d1_databases[0].database_id`。本地 `wrangler.jsonc` 保持本地配置，不要改成生产数据库。
 
 ## 2. 配置正式来源和 Cookie
 
-在 `wrangler.jsonc` 中把：
+在 `wrangler.production.jsonc` 中把：
 
 ```json
 "APP_ORIGIN": "https://你的正式域名",
@@ -30,8 +30,8 @@ npx wrangler d1 create student-growth-archive
 ## 3. 应用远程迁移和设置秘密
 
 ```powershell
-npx wrangler d1 migrations apply student-growth-archive --remote
-npx wrangler secret put SETUP_SECRET
+npx wrangler d1 migrations apply student-growth-archive --remote --config wrangler.production.jsonc
+npx wrangler secret put SETUP_SECRET --config wrangler.production.jsonc
 ```
 
 第二条命令会交互式要求输入秘密。不要把真实值写入 `wrangler.jsonc`、`.env` 或提交记录。
@@ -54,7 +54,11 @@ $env:ARCHIVE_ADMIN_PASSWORD='替换为高强度密码'
 npm run admin:create
 ```
 
-创建后立即登录验证。V1 只允许通过初始化接口创建第一个管理员；接口检测到已有管理员后会永久拒绝重复初始化。
+创建后立即登录验证。V1 只允许通过初始化接口创建第一个管理员；接口检测到已有管理员后会永久拒绝重复初始化。验证成功后删除初始化密钥，关闭不再需要的初始化凭据：
+
+```powershell
+npx wrangler secret delete SETUP_SECRET --config wrangler.production.jsonc
+```
 
 ## 6. 上线验收
 
@@ -71,6 +75,9 @@ npm run admin:create
 - 删除学生会级联删除其成绩、晚辅、课程和标签关联，属于不可恢复操作；界面已要求二次确认。
 - 不要在生产环境运行 `scripts/reset-e2e.mjs` 或 `npm run e2e:serve`。
 
-## 本机当前状态
+## 当前生产环境
 
-2026-08-12 检查 `npx wrangler whoami` 时，本机尚未登录 Cloudflare，因此本次开发没有执行远程 D1 创建或生产部署。完成 `npx wrangler login` 后按本页步骤操作即可。
+- Worker：`student-growth-archive`
+- 地址：`https://student-growth-archive.chuangxin-xueyuan.workers.dev`
+- D1：`student-growth-archive`
+- 正式环境使用独立的 `wrangler.production.jsonc`，不会连接本地测试数据库。

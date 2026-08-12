@@ -5,7 +5,9 @@ import type { AppEnv } from '../types';
 import { ApiException } from './http';
 
 const COOKIE_NAME = 'archive_session';
-const PASSWORD_ITERATIONS = 210_000;
+// Keep password verification within the CPU budget of the production Worker.
+// The schema enforces 100,000 as the minimum accepted PBKDF2 work factor.
+const PASSWORD_ITERATIONS = 100_000;
 const SESSION_SECONDS = 60 * 60 * 24 * 7;
 
 function bytesToBase64Url(bytes: Uint8Array): string {
