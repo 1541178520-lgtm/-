@@ -1,4 +1,4 @@
-import type { Subject } from './constants';
+import type { Subject } from './constants.js';
 
 export interface Tag {
   id: number;

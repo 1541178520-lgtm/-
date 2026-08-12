@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { SUBJECTS } from './constants';
+import { SUBJECTS } from './constants.js';
 
 const trimmed = (label: string, max: number) => z.string().trim().min(1, `${label}不能为空`).max(max, `${label}不能超过${max}个字符`);
 const optionalTrimmed = (label: string, max: number) => z.string().trim().max(max, `${label}不能超过${max}个字符`).default('');

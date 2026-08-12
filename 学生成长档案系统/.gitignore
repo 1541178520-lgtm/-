@@ -1,5 +1,8 @@
 node_modules/
 dist/
+dist-desktop/
+dist-electron/
+release/
 coverage/
 .wrangler/
 .dev.vars

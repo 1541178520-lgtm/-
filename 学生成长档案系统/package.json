@@ -3,9 +3,13 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
+  "main": "dist-electron/electron/main.js",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build && node scripts/scrub-build-secrets.mjs",
+    "build:desktop": "tsc -p tsconfig.electron.json && vite build --config vite.desktop.config.ts",
+    "desktop:pack": "npm run build:desktop && electron-builder --win portable",
+    "electron:dev": "npm run build:desktop && electron .",
     "preview": "vite preview",
     "build:production": "tsc -b && vite build --config vite.production.config.ts && node scripts/scrub-build-secrets.mjs",
     "deploy": "npm run build:production && wrangler deploy",
@@ -15,6 +19,7 @@
     "test": "npm run test:worker && npm run test:ui",
     "test:worker": "vitest run --config vitest.worker.config.ts",
     "test:ui": "vitest run --config vitest.ui.config.ts",
+    "test:desktop": "vitest run --config vitest.desktop.config.ts",
     "test:e2e": "playwright test",
     "e2e:serve": "node scripts/reset-e2e.mjs && vite --host 127.0.0.1"
   },
@@ -25,6 +30,24 @@
     "react-dom": "^19.2.8",
     "react-router": "^8.3.0",
     "zod": "^4.0.0"
+  },
+  "build": {
+    "appId": "cn.chuangxinxueyuan.studentarchive",
+    "productName": "创新学苑学生成长档案系统",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "dist-desktop/**/*",
+      "dist-electron/**/*",
+      "public/brand/**/*",
+      "package.json"
+    ],
+    "win": {
+      "target": [
+        "portable"
+      ]
+    }
   },
   "devDependencies": {
     "@cloudflare/vite-plugin": "^1.51.2",
@@ -40,6 +63,8 @@
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
     "@vitejs/plugin-react": "latest",
+    "electron": "^43.4.0",
+    "electron-builder": "^26.15.3",
     "eslint": "^9.0.0",
     "eslint-plugin-react-hooks": "latest",
     "eslint-plugin-react-refresh": "latest",

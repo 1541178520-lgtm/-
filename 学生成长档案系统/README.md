@@ -26,6 +26,27 @@
 
 需要 Node.js 22 或更高版本。
 
+## Windows 单机版
+
+本项目支持打包为不依赖网络的 Windows 桌面版。桌面版会把数据保存在当前 Windows 用户的应用数据目录中，断网也可以新增学生、记录成绩、记录晚辅/课程并导出 Word 档案。
+
+桌面版默认本机登录账号：
+
+```text
+用户名：archive-admin
+密码：archive-admin
+```
+
+开发和打包命令：
+
+```powershell
+npm install
+npm run test:desktop
+npm run desktop:pack
+```
+
+打包完成后，Windows 可执行文件会输出到 `release/` 目录。桌面版先满足机构内部单机录入使用；未来如果要做家长查询、网页端或小程序，可以继续复用当前前端和业务数据结构，再新增云端同步能力。
+
 ```powershell
 npm install
 Copy-Item .dev.vars.example .dev.vars
