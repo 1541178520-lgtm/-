@@ -6,7 +6,6 @@ import { StudentWorkspace } from './layout/StudentWorkspace';
 import { ScorePage } from './features/scores/ScorePage';
 import { StudyNotebook } from './features/study/StudyNotebook';
 import { CourseNotebook } from './features/courses/CourseNotebook';
-import { PrintArchivePage } from './features/print/PrintArchivePage';
 
 function Welcome() {
   return (
@@ -26,7 +25,6 @@ export function App() {
     <Routes>
       <Route path="/login" element={<LoginPage />} />
       <Route element={<ProtectedRoute />}>
-        <Route path="students/:studentId/print" element={<PrintArchivePage />} />
         <Route element={<ArchiveLayout />}>
           <Route index element={<Welcome />} />
           <Route path="students/:studentId" element={<StudentWorkspace />}>

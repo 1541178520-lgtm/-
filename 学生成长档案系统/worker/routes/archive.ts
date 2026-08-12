@@ -1,6 +1,6 @@
 import { Hono } from 'hono';
 import { SUBJECTS, type Subject } from '../../shared/constants';
-import type { CourseRecord, Score, StudyRecord, StudentArchive } from '../../shared/contracts';
+import type { CourseRecord, StudyRecord, StudentArchive } from '../../shared/contracts';
 import { getStudent, parseId } from '../lib/repository';
 import type { AppEnv } from '../types';
 import { listScores } from './scores';

@@ -38,7 +38,7 @@ async function addCourseRecord(page: Page, date: string, topic: string, feedback
 }
 
 test.describe.serial('学生成长档案核心验收', () => {
-  test('完整管理流程、持久化、权限和打印档案', async ({ page }) => {
+  test('完整管理流程、内联自动保存、权限和 Word 档案', async ({ page }) => {
     await createAdmin(page);
     await login(page);
 
@@ -102,6 +102,14 @@ test.describe.serial('学生成长档案核心验收', () => {
     await dialog.getByLabel('数学').fill('99');
     await dialog.getByRole('button', { name: '保存修改' }).click();
     await expect(scoreCards.nth(1)).toContainText('99');
+    await page.getByRole('button', { name: '编辑期中考试' }).click();
+    dialog = page.getByRole('dialog');
+    await dialog.getByRole('button', { name: '添加科目' }).click();
+    await dialog.getByLabel('新科目名称').fill('生物');
+    await dialog.getByRole('button', { name: '确认添加科目' }).click();
+    await dialog.getByLabel('生物').fill('0');
+    await dialog.getByRole('button', { name: '保存修改' }).click();
+    await expect(scoreCards.nth(1)).toContainText('生物');
     await page.getByRole('button', { name: '删除阶段测验' }).click();
     await page.getByRole('button', { name: '确认删除成绩' }).click();
     await expect(scoreCards).toHaveCount(2);
@@ -115,15 +123,14 @@ test.describe.serial('学生成长档案核心验收', () => {
     }
     await expect(page.getByText('第 10 页 / 共 10 页')).toBeVisible();
     await page.getByRole('button', { name: '上一页' }).click();
-    await expect(page.getByText('晚辅记录 9：完成阅读与错题复盘。')).toBeVisible();
-    await page.getByRole('button', { name: '编辑本页' }).click();
-    dialog = page.getByRole('dialog');
-    await dialog.getByLabel('记录日期').fill('2026-05-01');
-    await dialog.getByRole('button', { name: '保存修改' }).click();
+    await expect(page.getByLabel('晚辅反馈')).toHaveValue('晚辅记录 9：完成阅读与错题复盘。');
+    await page.getByLabel('记录日期').fill('2026-05-01');
+    await page.getByLabel('记录日期').press('Control+Enter');
+    await expect(page.getByRole('status')).toHaveText('已保存');
     await expect(page.getByText('第 1 页 / 共 10 页')).toBeVisible();
     await page.reload();
     await expect(page.getByText('第 1 页 / 共 10 页')).toBeVisible();
-    await expect(page.getByText('晚辅记录 9：完成阅读与错题复盘。')).toBeVisible();
+    await expect(page.getByLabel('晚辅反馈')).toHaveValue('晚辅记录 9：完成阅读与错题复盘。');
 
     await page.getByRole('link', { name: '课程' }).click();
     await page.getByRole('link', { name: '数学', exact: true }).click();
@@ -143,26 +150,18 @@ test.describe.serial('学生成长档案核心验收', () => {
     await expect(page.getByText('第 2 页 / 共 2 页')).toBeVisible();
     await page.getByRole('link', { name: '数学', exact: true }).click();
     await expect(page.getByText('第 1 页 / 共 5 页')).toBeVisible();
-    await expect(page.getByText('数学反馈 1')).toBeVisible();
-    await expect(page.getByText('英语反馈 3')).toHaveCount(0);
+    await expect(page.getByLabel('教师反馈')).toHaveValue('数学反馈 1');
+    await expect(page.getByLabel('教师反馈')).not.toHaveValue('英语反馈 3');
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.screenshot({ path: 'test-results/visual/desktop-main.png', fullPage: true });
 
-    await page.getByRole('link', { name: '打印档案' }).click();
-    await expect(page.getByRole('heading', { name: '学生成长档案', exact: true })).toBeVisible();
-    await expect(page.getByText('期中考试')).toBeVisible();
-    await expect(page.getByText('晚辅记录 10：完成阅读与错题复盘。')).toBeVisible();
-    await expect(page.getByRole('heading', { name: '数学课程档案' })).toBeVisible();
-    await expect(page.getByRole('heading', { name: '英语课程档案' })).toBeVisible();
-    await expect(page.getByRole('heading', { name: '物理课程档案' })).toBeVisible();
-    await expect(page.getByRole('heading', { name: '剑桥课程档案' })).toHaveCount(0);
-    await page.emulateMedia({ media: 'print' });
-    await expect(page.getByRole('navigation', { name: '打印操作' })).toBeHidden();
-    await page.pdf({ path: 'test-results/student-growth-archive.pdf', format: 'A4', printBackground: true });
-    await page.emulateMedia({ media: 'screen' });
-    await page.screenshot({ path: 'test-results/visual/desktop-print.png', fullPage: true });
+    const downloadPromise = page.waitForEvent('download');
+    await page.getByRole('button', { name: '导出 Word 档案' }).click();
+    const download = await downloadPromise;
+    expect(download.suggestedFilename()).toBe('林晓雨-学生成长档案.docx');
+    await download.saveAs('test-results/林晓雨-学生成长档案.docx');
 
-    await page.getByRole('link', { name: /返回学生档案/ }).click();
+    await page.getByRole('link', { name: '成绩记录' }).click();
     await page.setViewportSize({ width: 390, height: 844 });
     await expect(page.getByRole('heading', { name: '林晓雨' })).toBeVisible();
     await expect(page.locator('.score-card')).toHaveCount(2);

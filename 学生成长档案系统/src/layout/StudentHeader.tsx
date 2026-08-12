@@ -5,9 +5,15 @@ interface Props {
   student: Student;
   onEdit: () => void;
   onDelete: () => void;
+  onPrevious: () => void;
+  onNext: () => void;
+  onExport: () => void;
+  previousDisabled?: boolean;
+  nextDisabled?: boolean;
+  exporting: boolean;
 }
 
-export function StudentHeader({ student, onEdit, onDelete }: Props) {
+export function StudentHeader({ student, onEdit, onDelete, onPrevious, onNext, onExport, previousDisabled, nextDisabled, exporting }: Props) {
   return (
     <header className="student-header">
       <div className="student-title-row">
@@ -22,9 +28,11 @@ export function StudentHeader({ student, onEdit, onDelete }: Props) {
           {student.tags.length > 0 && <div className="tag-row">{student.tags.map((tag) => <span className="tag" key={tag.id}>{tag.name}</span>)}</div>}
         </div>
         <div className="student-actions no-print">
+          <button className="student-switch" type="button" aria-label="上一位学生" title="上一位学生" disabled={previousDisabled} onClick={onPrevious}>‹</button>
+          <button className="student-switch" type="button" aria-label="下一位学生" title="下一位学生" disabled={nextDisabled} onClick={onNext}>›</button>
           <button className="button button-secondary" type="button" onClick={onEdit}>编辑资料</button>
           <button className="button button-quiet-danger" type="button" onClick={onDelete}>删除学生</button>
-          <NavLink className="button button-primary" to={`/students/${student.id}/print`}>打印档案</NavLink>
+          <button className="button button-primary" type="button" disabled={exporting} onClick={onExport}>{exporting ? '正在生成 Word…' : '导出 Word 档案'}</button>
         </div>
       </div>
       <nav className="archive-tabs" aria-label="档案章节">

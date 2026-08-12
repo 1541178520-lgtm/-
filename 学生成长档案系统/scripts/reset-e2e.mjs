@@ -29,6 +29,7 @@ runWrangler([
     'DELETE FROM course_records',
     'DELETE FROM study_records',
     'DELETE FROM scores',
+    'DELETE FROM score_subjects WHERE is_default = 0',
     'DELETE FROM student_tags',
     'DELETE FROM tags',
     'DELETE FROM students',

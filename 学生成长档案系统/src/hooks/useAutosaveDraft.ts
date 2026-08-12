@@ -19,7 +19,7 @@ export function useAutosaveDraft<T>({ initial, save, delay = 800 }: Options<T>) 
   const timerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const inFlightRef = useRef<Promise<boolean> | null>(null);
   const saveRef = useRef(save);
-  saveRef.current = save;
+  useEffect(() => { saveRef.current = save; }, [save]);
 
   const update = useCallback((next: T) => {
     draftRef.current = next;
@@ -31,22 +31,25 @@ export function useAutosaveDraft<T>({ initial, save, delay = 800 }: Options<T>) 
   const saveNow = useCallback(async (): Promise<boolean> => {
     if (timerRef.current) clearTimeout(timerRef.current);
     if (same(draftRef.current, savedRef.current)) { setStatus('saved'); setMessage('已保存'); return true; }
-    if (inFlightRef.current) { await inFlightRef.current; if (!same(draftRef.current, savedRef.current)) return saveNow(); return true; }
-    const snapshot = draftRef.current;
-    setStatus('saving'); setMessage('正在保存…');
-    const request = saveRef.current(snapshot).then((saved) => {
-      savedRef.current = saved;
-      if (same(draftRef.current, snapshot)) { draftRef.current = saved; setDraft(saved); setStatus('saved'); setMessage('已保存'); }
-      else { setStatus('dirty'); setMessage('有新修改，继续保存'); }
+    if (inFlightRef.current) return inFlightRef.current;
+    const request = (async () => {
+      while (!same(draftRef.current, savedRef.current)) {
+        const snapshot = draftRef.current;
+        setStatus('saving'); setMessage('正在保存…');
+        try {
+          const saved = await saveRef.current(snapshot);
+          savedRef.current = saved;
+          if (same(draftRef.current, snapshot)) { draftRef.current = saved; setDraft(saved); setStatus('saved'); setMessage('已保存'); }
+          else { setStatus('dirty'); setMessage('有新修改，继续保存'); }
+        } catch (caught) {
+          setStatus('error'); setMessage(caught instanceof Error ? `${caught.message}，修改仍保留` : '保存失败，修改仍保留');
+          return false;
+        }
+      }
       return true;
-    }).catch((caught: unknown) => {
-      setStatus('error'); setMessage(caught instanceof Error ? `${caught.message}，修改仍保留` : '保存失败，修改仍保留');
-      return false;
-    }).finally(() => { inFlightRef.current = null; });
+    })().finally(() => { inFlightRef.current = null; });
     inFlightRef.current = request;
-    const success = await request;
-    if (success && !same(draftRef.current, savedRef.current)) return saveNow();
-    return success;
+    return request;
   }, []);
 
   useEffect(() => {

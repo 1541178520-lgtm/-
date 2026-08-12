@@ -18,6 +18,7 @@
     "e2e:serve": "node scripts/reset-e2e.mjs && vite --host 127.0.0.1"
   },
   "dependencies": {
+    "docx": "^9.7.1",
     "hono": "^4.13.1",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
@@ -43,6 +44,7 @@
     "eslint-plugin-react-refresh": "latest",
     "globals": "latest",
     "jsdom": "^29.1.1",
+    "jszip": "^3.10.1",
     "tailwindcss": "^4.3.3",
     "typescript": "^5.9.0",
     "typescript-eslint": "latest",
