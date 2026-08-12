@@ -3,6 +3,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { createLocalApi } from './localApi.js';
+import { LocalStore } from './localStore.js';
 
 let tempDir = '';
 
@@ -71,5 +72,28 @@ describe('local desktop API', () => {
     expect(archive.ok).toBe(true);
     const score = (archive.body as { scores: Array<{ values: Array<{ subject_name: string; value: number }> }> }).scores[0];
     expect(score.values).toEqual([{ subject_id: subjectId, subject_name: '历史', value: 88 }]);
+  });
+
+  it('exports and imports local data backups', async () => {
+    const sourcePath = path.join(tempDir, 'source.json');
+    const backupPath = path.join(tempDir, 'backup.json');
+    const targetPath = path.join(tempDir, 'target.json');
+    const sourceApi = createLocalApi(sourcePath);
+    await login(sourceApi);
+    await sourceApi.handle('/students', {
+      method: 'POST',
+      body: JSON.stringify({ name: '王五', grade: '初三', school: '', join_date: null, remark: '' }),
+    });
+
+    await new LocalStore(sourcePath).exportTo(backupPath);
+    await new LocalStore(targetPath).importFrom(backupPath);
+    const targetApi = createLocalApi(targetPath);
+    await login(targetApi);
+    const listed = await targetApi.handle('/students');
+
+    expect(listed.ok).toBe(true);
+    expect((listed.body as { students: Array<{ name: string }> }).students).toEqual([
+      expect.objectContaining({ name: '王五' }),
+    ]);
   });
 });

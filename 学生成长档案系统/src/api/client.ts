@@ -1,5 +1,5 @@
 import type { ApiErrorBody } from '../../shared/contracts';
-import type { DesktopApiResponse } from '../../electron/types';
+import type { DesktopApiResponse, DesktopFileResult } from '../../electron/types';
 
 export class ApiClientError extends Error {
   constructor(
@@ -60,6 +60,8 @@ declare global {
   interface Window {
     archiveDesktop?: {
       request(path: string, init?: { method?: string; body?: string | null }): Promise<DesktopApiResponse>;
+      exportBackup(): Promise<DesktopFileResult>;
+      importBackup(): Promise<DesktopFileResult>;
     };
   }
 }

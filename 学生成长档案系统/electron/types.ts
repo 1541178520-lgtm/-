@@ -22,3 +22,9 @@ export interface DesktopApiFailure {
 }
 
 export type DesktopApiResponse = DesktopApiSuccess | DesktopApiFailure;
+
+export interface DesktopFileResult {
+  canceled: boolean;
+  filePath?: string;
+  message?: string;
+}
