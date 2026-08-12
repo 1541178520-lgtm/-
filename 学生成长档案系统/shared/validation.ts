@@ -33,7 +33,13 @@ export const scoreInputSchema = z.object({
   physics: optionalScore.default(null),
   chemistry: optionalScore.default(null),
   remark: optionalTrimmed('备注', 2000),
+  values: z.array(z.object({
+    subject_id: z.number().int().positive(),
+    value: z.number().min(0, '成绩不能小于0').max(150, '成绩不能大于150'),
+  })).max(30, '一次考试最多记录30个科目').optional(),
 });
+
+export const scoreSubjectInputSchema = z.object({ name: trimmed('科目名称', 30) });
 
 export const studyRecordInputSchema = z.object({
   record_date: isoDateSchema,

@@ -7,7 +7,7 @@ import { PrintArchivePage } from './PrintArchivePage';
 
 const archive: StudentArchive = {
   student: { id: 1, name: '张三', grade: '初一', school: '实验学校', join_date: '2026-02-10', remark: '', created_at: '', updated_at: '', tags: [] },
-  scores: [{ id: 1, student_id: 1, exam_name: '入学考试', exam_date: '2026-02-10', chinese: null, math: 75, english: 82, physics: null, chemistry: null, remark: '', created_at: '', updated_at: '' }],
+  scores: [{ id: 1, student_id: 1, exam_name: '入学考试', exam_date: '2026-02-10', chinese: null, math: 75, english: 82, physics: null, chemistry: null, remark: '', created_at: '', updated_at: '', values: [{ subject_id: 2, subject_name: '数学', value: 75 }, { subject_id: 3, subject_name: '英语', value: 82 }] }],
   studyRecords: [{ id: 1, student_id: 1, record_date: '2026-08-10', content: '晚辅反馈正文', created_at: '', updated_at: '' }],
   courseSections: [
     { subject: '数学', records: [{ id: 1, student_id: 1, subject: '数学', record_date: '2026-08-01', course_content: '一次函数', feedback: '数学反馈', created_at: '', updated_at: '' }] },

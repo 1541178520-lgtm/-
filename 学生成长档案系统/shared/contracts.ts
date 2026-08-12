@@ -32,6 +32,20 @@ export interface Score {
   remark: string;
   created_at: string;
   updated_at: string;
+  values: ScoreValue[];
+}
+
+export interface ScoreSubject {
+  id: number;
+  name: string;
+  is_default: number;
+  created_at: string;
+}
+
+export interface ScoreValue {
+  subject_id: number;
+  subject_name: string;
+  value: number;
 }
 
 export interface StudyRecord {

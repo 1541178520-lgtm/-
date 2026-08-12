@@ -17,6 +17,7 @@ export async function resetAuth(): Promise<void> {
 
 export async function resetDatabase(): Promise<void> {
   await env.DB.batch([
+    env.DB.prepare('DELETE FROM score_values'),
     env.DB.prepare('DELETE FROM course_records'),
     env.DB.prepare('DELETE FROM study_records'),
     env.DB.prepare('DELETE FROM scores'),
@@ -25,6 +26,7 @@ export async function resetDatabase(): Promise<void> {
     env.DB.prepare('DELETE FROM students'),
     env.DB.prepare('DELETE FROM sessions'),
     env.DB.prepare('DELETE FROM admins'),
+    env.DB.prepare('DELETE FROM score_subjects WHERE is_default = 0'),
     env.DB.prepare("DELETE FROM sqlite_sequence WHERE name IN ('course_records', 'study_records', 'scores', 'tags', 'students', 'admins')"),
   ]);
 }

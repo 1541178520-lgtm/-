@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it } from 'vitest';
-import type { Score, Student } from '../../shared/contracts';
+import type { Score, ScoreSubject, Student } from '../../shared/contracts';
 import { api, authedHeaders, jsonRequest, login, resetDatabase, setupAdmin } from './helpers';
 
 describe('score API', () => {
@@ -14,6 +14,35 @@ describe('score API', () => {
       name: '张三', grade: '初一', school: '', join_date: null, remark: '',
     });
     studentId = (await response.json<{ student: Student }>()).student.id;
+  });
+
+  it('lists default subjects and reuses a normalized custom subject', async () => {
+    const initial = await api('/api/score-subjects', { headers: authedHeaders(cookie) });
+    expect((await initial.json<{ subjects: ScoreSubject[] }>()).subjects.map((subject) => subject.name)).toEqual(['语文', '数学', '英语', '物理', '化学']);
+
+    const created = await jsonRequest('/api/score-subjects', cookie, 'POST', { name: ' 生物 ' });
+    expect(created.status).toBe(201);
+    expect((await created.json<{ subject: ScoreSubject }>()).subject.name).toBe('生物');
+
+    const duplicate = await jsonRequest('/api/score-subjects', cookie, 'POST', { name: '生物' });
+    expect(duplicate.status).toBe(409);
+  });
+
+  it('stores dynamic score values, preserves zero, and omits empty subjects', async () => {
+    const subjectResponse = await jsonRequest('/api/score-subjects', cookie, 'POST', { name: '生物' });
+    const biology = (await subjectResponse.json<{ subject: ScoreSubject }>()).subject;
+    const created = await jsonRequest(`/api/students/${studentId}/scores`, cookie, 'POST', {
+      exam_name: '期中考试', exam_date: '2026-05-10', remark: '',
+      values: [{ subject_id: biology.id, value: 0 }],
+    });
+    expect(created.status).toBe(201);
+    const score = (await created.json<{ score: Score }>()).score;
+    expect(score.values).toEqual([{ subject_id: biology.id, subject_name: '生物', value: 0 }]);
+
+    const updated = await jsonRequest(`/api/scores/${score.id}`, cookie, 'PUT', {
+      exam_name: '期中考试', exam_date: '2026-05-10', remark: '', values: [],
+    });
+    expect((await updated.json<{ score: Score }>()).score.values).toEqual([]);
   });
 
   it('stores nullable subject values and orders three exams by exam date', async () => {
