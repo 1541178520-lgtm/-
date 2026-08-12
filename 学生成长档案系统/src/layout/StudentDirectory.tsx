@@ -35,9 +35,12 @@ export function StudentDirectory({ students, selectedStudentId, onAdd, onManageT
   return (
     <aside className={`student-directory${mobileOpen ? ' is-open' : ''}`} aria-label="学生档案目录">
       <div className="directory-heading">
-        <div>
-          <p className="eyebrow">学生档案目录</p>
-          <h1>成长档案</h1>
+        <div className="directory-brand">
+          <img src="/brand/innovation-academy-logo.jpg" alt="创新学苑教育" />
+          <div>
+            <p className="eyebrow">学生档案目录</p>
+            <h1>成长档案</h1>
+          </div>
         </div>
         {onClose && <button className="icon-button mobile-only" type="button" onClick={onClose} aria-label="关闭学生目录">×</button>}
       </div>

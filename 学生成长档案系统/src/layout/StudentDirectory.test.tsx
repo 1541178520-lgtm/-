@@ -15,6 +15,11 @@ const students: Student[] = [
 ];
 
 describe('StudentDirectory', () => {
+  it('shows compact Innovation Academy branding', () => {
+    render(<MemoryRouter><StudentDirectory students={students} selectedStudentId={null} onAdd={vi.fn()} /></MemoryRouter>);
+    expect(screen.getByRole('img', { name: '创新学苑教育' })).toHaveAttribute('src', '/brand/innovation-academy-logo.jpg');
+  });
+
   it('groups students by grade and collapses a grade', async () => {
     render(
       <MemoryRouter>

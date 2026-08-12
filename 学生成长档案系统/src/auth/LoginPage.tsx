@@ -32,7 +32,7 @@ export function LoginPage() {
   return (
     <main className="login-page">
       <section className="login-sheet" aria-labelledby="login-title">
-        <div className="archive-seal" aria-hidden="true">档</div>
+        <img className="login-brand-logo" src="/brand/innovation-academy-logo.jpg" alt="创新学苑教育" />
         <p className="eyebrow">教育机构内部档案室</p>
         <h1 id="login-title">学生成长档案</h1>
         <p className="login-intro">请使用管理员账号进入，查阅并维护学生的长期成长记录。</p>

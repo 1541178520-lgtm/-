@@ -25,6 +25,13 @@ function renderLogin(): void {
 describe('LoginPage', () => {
   afterEach(() => vi.unstubAllGlobals());
 
+  it('shows Innovation Academy branding', async () => {
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue(jsonResponse({ error: { code: 'UNAUTHENTICATED', message: '请先登录' } }, 401)));
+    renderLogin();
+
+    expect(await screen.findByRole('img', { name: '创新学苑教育' })).toHaveAttribute('src', '/brand/innovation-academy-logo.jpg');
+  });
+
   it('keeps the username and shows the server error after invalid credentials', async () => {
     const fetchStub = vi.fn()
       .mockResolvedValueOnce(jsonResponse({ error: { code: 'UNAUTHENTICATED', message: '请先登录' } }, 401))
