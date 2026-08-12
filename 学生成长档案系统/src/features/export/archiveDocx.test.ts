@@ -12,7 +12,7 @@ const archive: StudentArchive = {
 
 describe('buildArchiveDocx', () => {
   it('builds a Word archive with logo, dynamic subjects, section breaks, and page fields', async () => {
-    const blob = await buildArchiveDocx(archive, new Uint8Array([255, 216, 255, 217]));
+    const blob = await buildArchiveDocx(archive, new Uint8Array([255, 216, 255, 217]), new Uint8Array([255, 216, 1, 255, 217]));
     const zip = await JSZip.loadAsync(await blob.arrayBuffer());
     const xml = await zip.file('word/document.xml')!.async('string');
     const footer = await zip.file('word/footer1.xml')!.async('string');
@@ -20,8 +20,9 @@ describe('buildArchiveDocx', () => {
     expect(xml).toContain('数学');
     expect(xml).not.toContain('语文');
     expect(xml).toContain('认真完成作业');
+    expect(xml).toContain('任何学业问题，扫码咨询');
     expect(xml).toContain('w:type w:val="nextPage"');
     expect(footer).toContain('PAGE');
-    expect(Object.keys(zip.files).some((name) => name.startsWith('word/media/'))).toBe(true);
+    expect(Object.values(zip.files).filter((entry) => !entry.dir && entry.name.startsWith('word/media/'))).toHaveLength(2);
   });
 });

@@ -50,9 +50,9 @@ export function StudentWorkspace() {
   async function exportArchive() {
     setExporting(true); setError('');
     try {
-      const [archive, logoResponse] = await Promise.all([api<StudentArchive>(`/students/${student!.id}/archive`), fetch('/brand/innovation-academy-logo.jpg')]);
-      if (!logoResponse.ok) throw new Error('品牌图片加载失败');
-      const blob = await buildArchiveDocx(archive, new Uint8Array(await logoResponse.arrayBuffer()));
+      const [archive, logoResponse, qrResponse] = await Promise.all([api<StudentArchive>(`/students/${student!.id}/archive`), fetch('/brand/innovation-academy-logo.jpg'), fetch('/brand/innovation-academy-wechat-qr.jpg')]);
+      if (!logoResponse.ok || !qrResponse.ok) throw new Error('品牌图片加载失败');
+      const blob = await buildArchiveDocx(archive, new Uint8Array(await logoResponse.arrayBuffer()), new Uint8Array(await qrResponse.arrayBuffer()));
       const url = URL.createObjectURL(blob);
       const anchor = document.createElement('a'); anchor.href = url; anchor.download = `${student!.name}-学生成长档案.docx`; anchor.click();
       setTimeout(() => URL.revokeObjectURL(url), 0);

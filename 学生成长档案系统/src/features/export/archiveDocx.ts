@@ -41,7 +41,7 @@ function recordBlock(label: string, date: string, content: string) {
   ];
 }
 
-export async function buildArchiveDocx(archive: StudentArchive, logo: Uint8Array): Promise<Blob> {
+export async function buildArchiveDocx(archive: StudentArchive, logo: Uint8Array, wechatQr: Uint8Array): Promise<Blob> {
   const logoRun = () => new ImageRun({ data: logo, type: 'jpg', transformation: { width: 230, height: 230 } });
   const content: Array<Paragraph | Table> = [title('第一章  成绩成长记录')];
   if (archive.scores.length === 0) content.push(body('暂无成绩记录'));
@@ -66,7 +66,9 @@ export async function buildArchiveDocx(archive: StudentArchive, logo: Uint8Array
           new Paragraph({ alignment: AlignmentType.CENTER, spacing: { before: 140, after: 120 }, children: [run('学生成长档案', { bold: true, color: BLUE, size: 52 })] }),
           new Paragraph({ alignment: AlignmentType.CENTER, spacing: { after: 520 }, children: [run('STUDENT GROWTH ARCHIVE', { color: ORANGE, size: 19 })] }),
           metaTable(archive),
-          new Paragraph({ alignment: AlignmentType.CENTER, spacing: { before: 700 }, children: [run('成长有迹 · 记录每一次进步', { color: '647789', size: 19 })] }),
+          new Paragraph({ alignment: AlignmentType.CENTER, spacing: { before: 520, after: 45 }, keepNext: true, children: [new ImageRun({ data: wechatQr, type: 'jpg', transformation: { width: 92, height: 123 } })] }),
+          new Paragraph({ alignment: AlignmentType.CENTER, spacing: { after: 80 }, children: [run('任何学业问题，扫码咨询', { bold: true, color: BLUE, size: 17 })] }),
+          new Paragraph({ alignment: AlignmentType.CENTER, spacing: { before: 80 }, children: [run('成长有迹 · 记录每一次进步', { color: '647789', size: 17 })] }),
         ],
       },
       {
