@@ -59,7 +59,7 @@ auth.post('/auth/login', async (c) => {
   await c.env.DB.prepare(
     'INSERT INTO sessions (token_hash, admin_id, expires_at) VALUES (?, ?, ?)',
   ).bind(tokenHash, admin.id, sessionExpiry()).run();
-  setSessionCookie(c, token, c.env.SESSION_COOKIE_SECURE === 'true');
+  setSessionCookie(c, token, c.env.SESSION_COOKIE_SECURE === 'true', c.env.SESSION_COOKIE_SAMESITE === 'None' ? 'None' : 'Lax');
   return c.json({ admin: { id: admin.id, username: admin.username } });
 });
 
@@ -67,7 +67,7 @@ auth.get('/auth/me', requireSession, (c) => c.json({ admin: c.get('admin') }));
 
 auth.post('/auth/logout', requireSession, async (c) => {
   await c.env.DB.prepare('DELETE FROM sessions WHERE token_hash = ?').bind(c.get('sessionTokenHash')).run();
-  clearSessionCookie(c, c.env.SESSION_COOKIE_SECURE === 'true');
+  clearSessionCookie(c, c.env.SESSION_COOKIE_SECURE === 'true', c.env.SESSION_COOKIE_SAMESITE === 'None' ? 'None' : 'Lax');
   return c.body(null, 204);
 });
 
