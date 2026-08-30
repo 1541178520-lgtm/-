@@ -1,5 +1,7 @@
 name: Deploy student archive to GitHub Pages
 
+# Keep the deployment workflow self-documenting and easy to retrigger.
+
 on:
   push:
     branches:
