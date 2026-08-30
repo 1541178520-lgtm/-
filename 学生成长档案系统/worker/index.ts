@@ -9,6 +9,7 @@ import scoreRoutes from './routes/scores';
 import studyRecordRoutes from './routes/study-records';
 import courseRecordRoutes from './routes/course-records';
 import archiveRoutes from './routes/archive';
+import attendanceRoutes from './routes/attendance';
 import type { AppEnv, Env } from './types';
 
 export type { Env } from './types';
@@ -22,11 +23,28 @@ app.use('*', secureHeaders({
 }));
 app.use('/api/*', async (c, next) => {
   c.header('Cache-Control', 'no-store');
-  const unsafe = !['GET', 'HEAD', 'OPTIONS'].includes(c.req.method);
-  if (unsafe && c.req.header('origin') !== c.env.APP_ORIGIN) {
-    throw new ApiException(403, 'INVALID_ORIGIN', '请求来源无效');
+  const requestOrigin = c.req.header('origin');
+  const allowedOrigins = c.env.APP_ORIGIN.split(',').map((value) => value.trim()).filter(Boolean);
+  const originAllowed = Boolean(requestOrigin && allowedOrigins.includes(requestOrigin));
+  if (requestOrigin && !originAllowed) {
+    if (!['GET', 'HEAD', 'OPTIONS'].includes(c.req.method)) throw new ApiException(403, 'INVALID_ORIGIN', '请求来源无效');
+    return apiError(c, 403, 'INVALID_ORIGIN', '请求来源无效');
+  }
+  if (c.req.method === 'OPTIONS') {
+    if (originAllowed) {
+      c.header('Access-Control-Allow-Origin', requestOrigin!);
+      c.header('Access-Control-Allow-Credentials', 'true');
+      c.header('Access-Control-Allow-Headers', 'content-type, x-setup-secret');
+      c.header('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');
+    }
+    return c.body(null, 204);
   }
   await next();
+  if (originAllowed) {
+    c.header('Access-Control-Allow-Origin', requestOrigin!);
+    c.header('Access-Control-Allow-Credentials', 'true');
+    c.header('Vary', 'Origin');
+  }
 });
 
 app.route('/api', authRoutes);
@@ -39,6 +57,7 @@ protectedApi.route('/', scoreRoutes);
 protectedApi.route('/', studyRecordRoutes);
 protectedApi.route('/', courseRecordRoutes);
 protectedApi.route('/', archiveRoutes);
+protectedApi.route('/', attendanceRoutes);
 app.route('/api', protectedApi);
 
 app.notFound((c) => apiError(c, 404, 'NOT_FOUND', '接口不存在'));

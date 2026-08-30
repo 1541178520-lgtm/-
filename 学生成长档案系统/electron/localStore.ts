@@ -10,7 +10,7 @@ export interface LocalData {
     score: number;
     scoreSubject: number;
     studyRecord: number;
-    courseRecord: number;
+  courseRecord: number;
   };
   students: Array<Omit<Student, 'tags'> & { tagIds: number[] }>;
   tags: Tag[];
@@ -18,6 +18,7 @@ export interface LocalData {
   scores: Score[];
   studyRecords: StudyRecord[];
   courseRecords: CourseRecord[];
+  attendanceRecords: Array<{ student_id: number; attendance_date: string; created_at: string; updated_at: string }>;
 }
 
 const nowIso = () => new Date().toISOString();
@@ -45,6 +46,7 @@ function createInitialData(): LocalData {
     scores: [],
     studyRecords: [],
     courseRecords: [],
+    attendanceRecords: [],
   };
 }
 

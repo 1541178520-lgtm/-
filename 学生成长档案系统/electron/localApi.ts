@@ -1,7 +1,10 @@
-import type { CourseRecord, Score, ScoreSubject, ScoreValue, Student, StudentArchive, Tag } from '../shared/contracts.js';
+import type { Score, ScoreSubject, ScoreValue, Student, StudentArchive, Tag } from '../shared/contracts.js';
 import { SUBJECTS, type Subject } from '../shared/constants.js';
 import {
   courseRecordInputSchema,
+  attendanceMonthSchema,
+  attendanceToggleSchema,
+  isoDateSchema,
   loginInputSchema,
   scoreInputSchema,
   scoreSubjectInputSchema,
@@ -184,6 +187,7 @@ export function createLocalApi(dataPath: string) {
           data.scores = data.scores.filter((item) => item.student_id !== id);
           data.studyRecords = data.studyRecords.filter((item) => item.student_id !== id);
           data.courseRecords = data.courseRecords.filter((item) => item.student_id !== id);
+          data.attendanceRecords = data.attendanceRecords.filter((item) => item.student_id !== id);
         });
         return ok(undefined, 204);
       }
@@ -330,6 +334,32 @@ export function createLocalApi(dataPath: string) {
           data.scores.splice(index, 1);
         });
         return ok(undefined, 204);
+      }
+
+      if (parts[0] === 'students' && parts[2] === 'attendance' && method === 'GET') {
+        const studentId = parseId(parts[1], '学生');
+        const month = url.searchParams.get('month') ?? new Date().toISOString().slice(0, 7);
+        if (!attendanceMonthSchema.safeParse(month).success) throw new LocalApiError(422, 'INVALID_MONTH', '月份格式无效', { month: '请使用 YYYY-MM 格式' });
+        const data = await store.read();
+        findStudent(data, studentId);
+        return ok({ month, dates: data.attendanceRecords.filter((item) => item.student_id === studentId && item.attendance_date.startsWith(`${month}-`)).map((item) => item.attendance_date).sort() });
+      }
+
+      if (parts[0] === 'students' && parts[2] === 'attendance' && parts.length === 4 && method === 'PUT') {
+        const studentId = parseId(parts[1], '学生');
+        const date = parts[3];
+        if (!isoDateSchema.safeParse(date).success) throw new LocalApiError(422, 'INVALID_DATE', '签到日期无效', { date: '请输入有效日期' });
+        const input = parseBody(init, attendanceToggleSchema);
+        return ok({ attendance: await store.update((data) => {
+          findStudent(data, studentId);
+          const index = data.attendanceRecords.findIndex((item) => item.student_id === studentId && item.attendance_date === date);
+          if (input.signed && index < 0) {
+            const created_at = now();
+            data.attendanceRecords.push({ student_id: studentId, attendance_date: date, created_at, updated_at: created_at });
+          } else if (input.signed && index >= 0) data.attendanceRecords[index].updated_at = now();
+          else if (!input.signed && index >= 0) data.attendanceRecords.splice(index, 1);
+          return { student_id: studentId, attendance_date: date, signed: input.signed };
+        }) });
       }
 
       if (parts[0] === 'students' && parts[2] === 'study-records' && method === 'GET') {

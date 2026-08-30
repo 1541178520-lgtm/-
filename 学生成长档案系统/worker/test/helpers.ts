@@ -17,6 +17,7 @@ export async function resetAuth(): Promise<void> {
 
 export async function resetDatabase(): Promise<void> {
   await env.DB.batch([
+    env.DB.prepare('DELETE FROM attendance_records'),
     env.DB.prepare('DELETE FROM score_values'),
     env.DB.prepare('DELETE FROM course_records'),
     env.DB.prepare('DELETE FROM study_records'),

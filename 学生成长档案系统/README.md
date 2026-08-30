@@ -13,6 +13,7 @@
 - Word 整档导出：带创新学苑 Logo、封面、动态成绩表、晚辅和有数据的课程章节，自动分页并带页眉页码。
 - 学生档案顶部可直接切换上一位/下一位学生，适合老师连续录入。
 - 桌面、平板和手机响应式界面，手机端使用抽屉式学生目录。
+- 学生详情页提供按月签到日历，点击日期即可签到或取消签到，记录与学生档案绑定。
 
 ## 技术结构
 
@@ -21,6 +22,8 @@
 - Vitest、Cloudflare Workers 测试池、Testing Library、Playwright
 
 前端和 API 由同一个 Worker 同源提供，避免额外的跨域和 Cookie 配置。管理员密码使用 PBKDF2-SHA256 加盐哈希；浏览器仅保存 HttpOnly 会话 Cookie，数据库只保存会话令牌哈希。
+
+GitHub Pages 部署使用仓库中的 `.github/workflows/deploy-pages.yml`。推送 `main` 或 `codex/student-growth-archive` 分支后会自动构建静态网页；网页继续调用 Cloudflare Worker API，因此网页端需要联网，数据（包括签到）保存在云端数据库。
 
 ## 本地启动
 

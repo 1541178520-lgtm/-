@@ -50,7 +50,7 @@ export function StudentWorkspace() {
   async function exportArchive() {
     setExporting(true); setError('');
     try {
-      const [archive, logoResponse, qrResponse] = await Promise.all([api<StudentArchive>(`/students/${student!.id}/archive`), fetch('/brand/innovation-academy-logo.jpg'), fetch('/brand/innovation-academy-wechat-qr.jpg')]);
+      const [archive, logoResponse, qrResponse] = await Promise.all([api<StudentArchive>(`/students/${student!.id}/archive`), fetch(`${import.meta.env.BASE_URL}brand/innovation-academy-logo.jpg`), fetch(`${import.meta.env.BASE_URL}brand/innovation-academy-wechat-qr.jpg`)]);
       if (!logoResponse.ok || !qrResponse.ok) throw new Error('品牌图片加载失败');
       const blob = await buildArchiveDocx(archive, new Uint8Array(await logoResponse.arrayBuffer()), new Uint8Array(await qrResponse.arrayBuffer()));
       const url = URL.createObjectURL(blob);

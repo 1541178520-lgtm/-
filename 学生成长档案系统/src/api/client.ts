@@ -31,7 +31,8 @@ export async function api<T>(path: string, init: RequestInit = {}): Promise<T> {
 
   const headers = new Headers(init.headers);
   if (init.body && !headers.has('content-type')) headers.set('content-type', 'application/json');
-  const response = await fetch(`/api${path}`, { ...init, headers, credentials: 'same-origin' });
+  const apiOrigin = (import.meta.env.VITE_API_ORIGIN ?? '').replace(/\/$/u, '');
+  const response = await fetch(`${apiOrigin}/api${path}`, { ...init, headers, credentials: apiOrigin ? 'include' : 'same-origin' });
 
   if (!response.ok) {
     let body: ApiErrorBody | undefined;

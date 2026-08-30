@@ -65,20 +65,20 @@ export async function hashSessionToken(token: string): Promise<string> {
   return bytesToBase64Url(new Uint8Array(digest));
 }
 
-export function setSessionCookie(c: Parameters<typeof setCookie>[0], token: string, secure: boolean): void {
+export function setSessionCookie(c: Parameters<typeof setCookie>[0], token: string, secure: boolean, sameSite: 'Lax' | 'None' = 'Lax'): void {
   setCookie(c, COOKIE_NAME, token, {
     httpOnly: true,
-    sameSite: 'Lax',
+    sameSite,
     secure,
     path: '/',
     maxAge: SESSION_SECONDS,
   });
 }
 
-export function clearSessionCookie(c: Parameters<typeof setCookie>[0], secure: boolean): void {
+export function clearSessionCookie(c: Parameters<typeof setCookie>[0], secure: boolean, sameSite: 'Lax' | 'None' = 'Lax'): void {
   setCookie(c, COOKIE_NAME, '', {
     httpOnly: true,
-    sameSite: 'Lax',
+    sameSite,
     secure,
     path: '/',
     maxAge: 0,
@@ -102,7 +102,7 @@ export const requireSession = createMiddleware<AppEnv>(async (c, next) => {
 
   if (!row || row.expires_at <= new Date().toISOString()) {
     if (row) await c.env.DB.prepare('DELETE FROM sessions WHERE token_hash = ?').bind(tokenHash).run();
-    clearSessionCookie(c, c.env.SESSION_COOKIE_SECURE === 'true');
+    clearSessionCookie(c, c.env.SESSION_COOKIE_SECURE === 'true', c.env.SESSION_COOKIE_SAMESITE === 'None' ? 'None' : 'Lax');
     throw new ApiException(401, 'UNAUTHENTICATED', '登录已失效，请重新登录');
   }
 

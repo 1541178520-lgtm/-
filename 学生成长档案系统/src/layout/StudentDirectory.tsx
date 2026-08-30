@@ -36,7 +36,7 @@ export function StudentDirectory({ students, selectedStudentId, onAdd, onManageT
     <aside className={`student-directory${mobileOpen ? ' is-open' : ''}`} aria-label="学生档案目录">
       <div className="directory-heading">
         <div className="directory-brand">
-          <img src="/brand/innovation-academy-logo.jpg" alt="创新学苑教育" />
+          <img src={`${import.meta.env.BASE_URL}brand/innovation-academy-logo.jpg`} alt="创新学苑教育" />
           <div>
             <p className="eyebrow">学生档案目录</p>
             <h1>成长档案</h1>

@@ -12,6 +12,7 @@
     "electron:dev": "npm run build:desktop && electron .",
     "preview": "vite preview",
     "build:production": "tsc -b && vite build --config vite.production.config.ts && node scripts/scrub-build-secrets.mjs",
+    "build:pages": "tsc -b && vite build --config vite.github-pages.config.ts",
     "deploy": "npm run build:production && wrangler deploy",
     "admin:create": "node scripts/create-admin.ts",
     "typecheck": "tsc -b --pretty false",

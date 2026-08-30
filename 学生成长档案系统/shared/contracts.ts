@@ -57,6 +57,13 @@ export interface StudyRecord {
   updated_at: string;
 }
 
+export interface AttendanceRecord {
+  student_id: number;
+  attendance_date: string;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface CourseRecord {
   id: number;
   student_id: number;

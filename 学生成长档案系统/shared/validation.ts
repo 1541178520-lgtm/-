@@ -10,6 +10,9 @@ export const isoDateSchema = z.string().refine((value) => {
   return !Number.isNaN(date.getTime()) && date.toISOString().slice(0, 10) === value;
 }, '请输入有效日期');
 
+export const attendanceMonthSchema = z.string().regex(/^\d{4}-(0[1-9]|1[0-2])$/, '月份格式无效');
+export const attendanceToggleSchema = z.object({ signed: z.boolean() });
+
 export const studentInputSchema = z.object({
   name: trimmed('姓名', 80),
   grade: trimmed('年级', 40),

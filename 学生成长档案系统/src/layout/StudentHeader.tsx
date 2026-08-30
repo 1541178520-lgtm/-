@@ -1,5 +1,6 @@
 import { NavLink } from 'react-router';
 import type { Student } from '../../shared/contracts';
+import { AttendanceCalendar } from '../features/attendance/AttendanceCalendar';
 
 interface Props {
   student: Student;
@@ -35,6 +36,7 @@ export function StudentHeader({ student, onEdit, onDelete, onPrevious, onNext, o
           <button className="button button-primary" type="button" disabled={exporting} onClick={onExport}>{exporting ? '正在生成 Word…' : '导出 Word 档案'}</button>
         </div>
       </div>
+      <AttendanceCalendar studentId={student.id} />
       <nav className="archive-tabs" aria-label="档案章节">
         <NavLink to={`/students/${student.id}/scores`}>成绩记录</NavLink>
         <NavLink to={`/students/${student.id}/study`}>晚辅</NavLink>

@@ -17,8 +17,9 @@
     }
   ],
   "vars": {
-    "APP_ORIGIN": "https://student-growth-archive.chuangxin-xueyuan.workers.dev",
-    "SESSION_COOKIE_SECURE": "true"
+    "APP_ORIGIN": "https://student-growth-archive.chuangxin-xueyuan.workers.dev,https://1541178520-lgtm.github.io",
+    "SESSION_COOKIE_SECURE": "true",
+    "SESSION_COOKIE_SAMESITE": "None"
   },
   "assets": {
     "not_found_handling": "single-page-application",

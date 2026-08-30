@@ -96,6 +96,31 @@ a { color: inherit; text-decoration: none; }
 .student-header h2 { margin: 0; font-family: "STSong", "SimSun", serif; font-size: 2rem; font-weight: 550; letter-spacing: .06em; }
 .student-meta { display: flex; flex-wrap: wrap; gap: .5rem 1rem; margin-top: .65rem; color: var(--muted); font-size: .86rem; }
 .student-meta span + span::before { content: "·"; margin-right: 1rem; color: #aaa193; }
+.attendance-panel { margin-top: 1.35rem; padding: .9rem 1rem .75rem; border: 1px solid #ddd2c3; border-radius: 7px; background: linear-gradient(135deg, #fbf8f1, #fffefa); }
+.attendance-heading { display: flex; align-items: center; gap: 1rem; }
+.attendance-kicker { margin: 0; color: var(--accent); font-size: .68rem; font-weight: 700; letter-spacing: .16em; }
+.attendance-heading h3 { margin: .15rem 0 0; font-family: "STSong", "SimSun", serif; font-size: 1.15rem; font-weight: 550; }
+.attendance-controls { display: inline-flex; align-items: center; gap: .5rem; margin-left: auto; color: var(--accent-dark); }
+.attendance-controls button { width: 25px; height: 25px; border: 1px solid #d7cabe; border-radius: 50%; background: #fff; color: var(--accent); cursor: pointer; font-size: 1rem; line-height: 1; }
+.attendance-controls strong { min-width: 74px; text-align: center; font-size: .82rem; }
+.attendance-count { color: var(--muted); font-size: .75rem; }
+.attendance-count b { color: var(--accent); font-size: .95rem; }
+.attendance-weekdays, .attendance-grid { display: grid; grid-template-columns: repeat(7, minmax(24px, 1fr)); gap: .28rem; max-width: 620px; margin-top: .7rem; }
+.attendance-weekdays { margin-left: auto; margin-right: auto; color: #998f82; font-size: .68rem; text-align: center; }
+.attendance-grid { margin-left: auto; margin-right: auto; }
+.attendance-day, .attendance-empty { min-height: 30px; }
+.attendance-day { position: relative; display: grid; place-items: center; border: 1px solid transparent; border-radius: 5px; background: rgba(255,255,255,.8); color: #5a5249; cursor: pointer; font-size: .75rem; }
+.attendance-day:hover { border-color: #c9ad9b; background: #fff; }
+.attendance-day.is-today { border-color: #bea08e; }
+.attendance-day.is-signed { border-color: #9eb39a; background: #edf5ea; color: #456343; font-weight: 700; }
+.attendance-day.is-signed b { position: absolute; right: 3px; bottom: 1px; color: #4e814e; font-size: .64rem; }
+.attendance-day:disabled { cursor: wait; opacity: .6; }
+.attendance-grid.is-loading { opacity: .55; }
+.attendance-footer { display: flex; align-items: center; gap: .8rem; margin-top: .6rem; color: #8b8175; font-size: .68rem; }
+.attendance-footer span { display: inline-flex; align-items: center; gap: .3rem; }
+.attendance-dot { width: 7px; height: 7px; display: inline-block; border: 1px solid #d3c9bb; border-radius: 50%; background: #fff; }
+.attendance-dot.signed { border-color: #9eb39a; background: #edf5ea; }
+.attendance-footer em { margin-left: auto; color: var(--danger); font-style: normal; }
 .tag-row { display: flex; flex-wrap: wrap; gap: .35rem; margin-top: .8rem; }
 .tag { padding: .2rem .5rem; border: 1px solid #cdd4c8; border-radius: 3px; background: #f3f6f1; color: #566052; font-size: .72rem; }
 .archive-tabs { display: flex; gap: 1.75rem; margin-top: 2rem; }
@@ -259,6 +284,9 @@ a { color: inherit; text-decoration: none; }
   .student-title-row { align-items: flex-start; }
   .student-actions { max-width: 240px; }
   .student-header h2 { font-size: 1.65rem; }
+  .attendance-heading { flex-wrap: wrap; gap: .65rem; }
+  .attendance-controls { margin-left: 0; }
+  .attendance-count { margin-left: auto; }
   .archive-tabs { gap: 1.1rem; margin-top: 1.25rem; overflow-x: auto; }
   .chapter-content { padding: 1.5rem 1.25rem 3rem; }
   .score-subjects { grid-template-columns: repeat(3, 1fr); }

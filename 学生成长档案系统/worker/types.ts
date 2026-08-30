@@ -4,6 +4,7 @@ export interface Env {
   DB: D1Database;
   APP_ORIGIN: string;
   SESSION_COOKIE_SECURE: string;
+  SESSION_COOKIE_SAMESITE?: string;
   SETUP_SECRET?: string;
 }
 

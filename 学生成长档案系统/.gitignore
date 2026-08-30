@@ -2,6 +2,7 @@ node_modules/
 dist/
 dist-desktop/
 dist-electron/
+dist-pages/
 release/
 coverage/
 .wrangler/
