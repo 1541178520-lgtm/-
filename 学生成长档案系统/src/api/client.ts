@@ -12,6 +12,8 @@ export class ApiClientError extends Error {
   }
 }
 
+const REQUEST_TIMEOUT_MS = 12_000;
+
 export async function api<T>(path: string, init: RequestInit = {}): Promise<T> {
   if (window.archiveDesktop) {
     const result = await window.archiveDesktop.request(path, {
@@ -32,7 +34,24 @@ export async function api<T>(path: string, init: RequestInit = {}): Promise<T> {
   const headers = new Headers(init.headers);
   if (init.body && !headers.has('content-type')) headers.set('content-type', 'application/json');
   const apiOrigin = (import.meta.env.VITE_API_ORIGIN ?? '').replace(/\/$/u, '');
-  const response = await fetch(`${apiOrigin}/api${path}`, { ...init, headers, credentials: apiOrigin ? 'include' : 'same-origin' });
+  const controller = new AbortController();
+  const timeout = window.setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+  let response: Response;
+  try {
+    response = await fetch(`${apiOrigin}/api${path}`, {
+      ...init,
+      headers,
+      credentials: apiOrigin ? 'include' : 'same-origin',
+      signal: init.signal ?? controller.signal,
+    });
+  } catch (error) {
+    if (error instanceof DOMException && error.name === 'AbortError') {
+      throw new ApiClientError(0, 'NETWORK_TIMEOUT', '连接档案服务器超时，请检查网络后重试；中国大陆网络可尝试使用 Worker 入口。');
+    }
+    throw error;
+  } finally {
+    window.clearTimeout(timeout);
+  }
 
   if (!response.ok) {
     let body: ApiErrorBody | undefined;
